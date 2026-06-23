@@ -1,0 +1,6 @@
+CREATE DATABASE rate;
+CREATE DATABASE reservation;
+CREATE DATABASE payment;
+CREATE DATABASE guest;
+CREATE DATABASE housekeeping;
+CREATE DATABASE notification;

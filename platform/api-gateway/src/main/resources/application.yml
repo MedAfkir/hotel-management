@@ -1,0 +1,54 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: hotel-service
+              uri: lb://hotel-service
+              predicates:
+                - Path=/api/hotels/**
+            - id: rate-service
+              uri: lb://rate-service
+              predicates:
+                - Path=/api/rates/**
+            - id: reservation-service
+              uri: lb://reservation-service
+              predicates:
+                - Path=/api/reservations/**
+            - id: payment-service
+              uri: lb://payment-service
+              predicates:
+                - Path=/api/payments/**
+            - id: guest-service
+              uri: lb://guest-service
+              predicates:
+                - Path=/api/guests/**
+            - id: hotel-management-service
+              uri: lb://hotel-management-service
+              predicates:
+                - Path=/api/admin/**
+            - id: housekeeping-service
+              uri: lb://housekeeping-service
+              predicates:
+                - Path=/api/housekeeping/**
+            - id: notification-service
+              uri: lb://notification-service
+              predicates:
+                - Path=/api/notifications/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

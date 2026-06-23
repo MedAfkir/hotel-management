@@ -1,0 +1,16 @@
+rootProject.name = 'hotel-management'
+
+include 'shared:shared-kernel'
+
+include 'platform:discovery-server'
+include 'platform:config-server'
+include 'platform:api-gateway'
+
+include 'services:hotel-service'
+include 'services:rate-service'
+include 'services:reservation-service'
+include 'services:payment-service'
+include 'services:guest-service'
+include 'services:hotel-management-service'
+include 'services:housekeeping-service'
+include 'services:notification-service'
