@@ -6,14 +6,46 @@ spring:
     name: hotel-management-service
   config:
     import: optional:configserver:http://localhost:8888
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+      client:
+        config:
+          default:
+            connect-timeout: 1000
+            read-timeout: 3000
 
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
 
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        register-health-indicator: true
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        failure-rate-threshold: 50
+        slow-call-rate-threshold: 100
+        slow-call-duration-threshold: 2s
+        wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 4s
+        cancel-running-future: true
+
 management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,circuitbreakers,circuitbreakerevents
+  health:
+    circuitbreakers:
+      enabled: true

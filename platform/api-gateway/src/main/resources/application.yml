@@ -13,42 +13,105 @@ spring:
               uri: lb://hotel-service
               predicates:
                 - Path=/api/hotels/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: hotelServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/hotel-service
             - id: rate-service
               uri: lb://rate-service
               predicates:
                 - Path=/api/rates/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: rateServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/rate-service
             - id: reservation-service
               uri: lb://reservation-service
               predicates:
                 - Path=/api/reservations/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: reservationServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/reservation-service
             - id: payment-service
               uri: lb://payment-service
               predicates:
                 - Path=/api/payments/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: paymentServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/payment-service
             - id: guest-service
               uri: lb://guest-service
               predicates:
                 - Path=/api/guests/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: guestServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/guest-service
             - id: hotel-management-service
               uri: lb://hotel-management-service
               predicates:
                 - Path=/api/admin/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: hotelManagementServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/hotel-management-service
             - id: housekeeping-service
               uri: lb://housekeeping-service
               predicates:
                 - Path=/api/housekeeping/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: housekeepingServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/housekeeping-service
             - id: notification-service
               uri: lb://notification-service
               predicates:
                 - Path=/api/notifications/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: notificationServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/notification-service
 
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
 
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        register-health-indicator: true
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        failure-rate-threshold: 50
+        slow-call-rate-threshold: 100
+        slow-call-duration-threshold: 3s
+        wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 5s
+        cancel-running-future: true
+
 management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,circuitbreakers,circuitbreakerevents
+  health:
+    circuitbreakers:
+      enabled: true

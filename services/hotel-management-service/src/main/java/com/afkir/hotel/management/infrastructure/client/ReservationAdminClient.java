@@ -8,7 +8,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "reservation-service", path = "/api/reservations")
+@FeignClient(name = "reservation-service", path = "/api/reservations",
+        fallbackFactory = ReservationAdminClientFallbackFactory.class)
 public interface ReservationAdminClient {
 
     @GetMapping("/{id}")

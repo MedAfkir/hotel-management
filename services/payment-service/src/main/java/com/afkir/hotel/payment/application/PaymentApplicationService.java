@@ -9,14 +9,12 @@ import com.afkir.hotel.payment.domain.repository.PaymentRepository;
 import com.afkir.hotel.payment.infrastructure.client.ReservationClient;
 import com.afkir.hotel.shared.DomainException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class PaymentApplicationService {
 
     private final PaymentRepository repository;
@@ -29,12 +27,7 @@ public class PaymentApplicationService {
         Payment payment = new Payment(reservationId, amount, currency, method);
         payment.complete();
         Payment saved = repository.save(payment);
-        try {
-            reservationClient.confirm(reservationId);
-        }
-        catch (RuntimeException ex) {
-            log.warn("could not confirm reservation {} after payment", reservationId);
-        }
+        reservationClient.confirm(reservationId);
         return saved;
     }
 

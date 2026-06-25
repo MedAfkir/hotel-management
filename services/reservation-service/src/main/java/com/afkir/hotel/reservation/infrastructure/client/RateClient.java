@@ -8,7 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "rate-service", path = "/api/rates")
+@FeignClient(name = "rate-service", path = "/api/rates", fallbackFactory = RateClientFallbackFactory.class)
 public interface RateClient {
 
     @GetMapping
