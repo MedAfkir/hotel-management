@@ -5,13 +5,11 @@ import java.util.UUID;
 
 import jakarta.persistence.*;
 
-import lombok.Builder;
 import lombok.Getter;
 
 @Entity
 @Table(name = "notification")
 @Getter
-@Builder
 public class Notification {
 
     @Id
