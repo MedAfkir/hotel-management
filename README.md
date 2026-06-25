@@ -1,8 +1,7 @@
 # Hotel Management
 
-Backend for a hotel management platform built as a Spring Boot microservice architecture following
-Domain-Driven Design. The reservation domain is modeled after the hotel reservation system design in
-System Design Interview (Alex Xu), Chapter 7.
+Backend for a hotel management platform built with Spring Boot microservices and Domain-Driven Design.
+The reservation domain follows the hotel reservation system from System Design Interview by Alex Xu.
 
 ## Stack
 
@@ -15,24 +14,24 @@ System Design Interview (Alex Xu), Chapter 7.
 
 ## Platform modules
 
-| Module | Port | Description |
-| --- | --- | --- |
-| platform/discovery-server | 8761 | Eureka service registry |
-| platform/config-server | 8888 | Centralized configuration (native profile) |
-| platform/api-gateway | 8080 | Edge gateway and routing |
+| Module                    | Port | Description                                |
+|---------------------------|------|--------------------------------------------|
+| platform/discovery-server | 8761 | Eureka service registry                    |
+| platform/config-server    | 8888 | Centralized configuration (native profile) |
+| platform/api-gateway      | 8080 | Edge gateway and routing                   |
 
 ## Domain services
 
-| Module | Port | Route | Database |
-| --- | --- | --- | --- |
-| services/hotel-service | 8081 | /api/hotels | hotel |
-| services/rate-service | 8082 | /api/rates | rate |
-| services/reservation-service | 8083 | /api/reservations | reservation |
-| services/payment-service | 8084 | /api/payments | payment |
-| services/guest-service | 8085 | /api/guests | guest |
-| services/hotel-management-service | 8086 | /api/admin | none |
-| services/housekeeping-service | 8087 | /api/housekeeping | housekeeping |
-| services/notification-service | 8088 | /api/notifications | notification |
+| Module                            | Port | Route              | Database     |
+|-----------------------------------|------|--------------------|--------------|
+| services/hotel-service            | 8081 | /api/hotels        | hotel        |
+| services/rate-service             | 8082 | /api/rates         | rate         |
+| services/reservation-service      | 8083 | /api/reservations  | reservation  |
+| services/payment-service          | 8084 | /api/payments      | payment      |
+| services/guest-service            | 8085 | /api/guests        | guest        |
+| services/hotel-management-service | 8086 | /api/admin         | none         |
+| services/housekeeping-service     | 8087 | /api/housekeeping  | housekeeping |
+| services/notification-service     | 8088 | /api/notifications | notification |
 
 ## Shared
 
