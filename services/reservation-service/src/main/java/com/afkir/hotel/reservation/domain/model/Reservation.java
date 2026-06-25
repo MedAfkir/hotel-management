@@ -1,17 +1,18 @@
 package com.afkir.hotel.reservation.domain.model;
 
-import com.afkir.hotel.shared.DomainException;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import jakarta.persistence.*;
+
+import com.afkir.hotel.shared.DomainException;
+import lombok.Builder;
+import lombok.Getter;
+
+@Getter
 @Entity
+@Builder
 @Table(name = "reservation")
 public class Reservation {
 
@@ -44,8 +45,8 @@ public class Reservation {
     }
 
     public Reservation(UUID id, String idempotencyKey, UUID hotelId, UUID roomTypeId, UUID guestId,
-            LocalDate startDate, LocalDate endDate, int numberOfRooms, BigDecimal totalAmount,
-            String currency) {
+                       LocalDate startDate, LocalDate endDate, int numberOfRooms, BigDecimal totalAmount,
+                       String currency) {
         this.id = id;
         this.idempotencyKey = idempotencyKey;
         this.hotelId = hotelId;
@@ -62,6 +63,12 @@ public class Reservation {
     public void markPaid() {
         requireStatus(ReservationStatus.PENDING);
         status = ReservationStatus.PAID;
+    }
+
+    private void requireStatus(ReservationStatus expected) {
+        if (status != expected) {
+            throw new DomainException("expected status " + expected + " but was " + status);
+        }
     }
 
     public void cancel() {
@@ -81,53 +88,4 @@ public class Reservation {
         status = ReservationStatus.REFUNDED;
     }
 
-    private void requireStatus(ReservationStatus expected) {
-        if (status != expected) {
-            throw new DomainException("expected status " + expected + " but was " + status);
-        }
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public String getIdempotencyKey() {
-        return idempotencyKey;
-    }
-
-    public UUID getHotelId() {
-        return hotelId;
-    }
-
-    public UUID getRoomTypeId() {
-        return roomTypeId;
-    }
-
-    public UUID getGuestId() {
-        return guestId;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public int getNumberOfRooms() {
-        return numberOfRooms;
-    }
-
-    public BigDecimal getTotalAmount() {
-        return totalAmount;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public ReservationStatus getStatus() {
-        return status;
-    }
 }

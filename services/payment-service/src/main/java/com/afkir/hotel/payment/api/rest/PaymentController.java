@@ -1,30 +1,25 @@
 package com.afkir.hotel.payment.api.rest;
 
+import java.util.List;
+import java.util.UUID;
+
+import jakarta.validation.Valid;
+
 import com.afkir.hotel.payment.api.dto.PaymentResponse;
 import com.afkir.hotel.payment.api.dto.ProcessPaymentRequest;
 import com.afkir.hotel.payment.application.PaymentApplicationService;
-import jakarta.validation.Valid;
-import java.util.List;
-import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/payments")
+@RequiredArgsConstructor
 public class PaymentController {
 
     private final PaymentApplicationService service;
-
-    public PaymentController(PaymentApplicationService service) {
-        this.service = service;
-    }
 
     @PostMapping
     public ResponseEntity<PaymentResponse> process(@Valid @RequestBody ProcessPaymentRequest request) {
@@ -47,4 +42,5 @@ public class PaymentController {
     public List<PaymentResponse> byReservation(@RequestParam("reservationId") UUID reservationId) {
         return service.findByReservation(reservationId).stream().map(PaymentResponse::from).toList();
     }
+
 }

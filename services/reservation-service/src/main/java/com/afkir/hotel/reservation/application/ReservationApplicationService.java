@@ -1,5 +1,9 @@
 package com.afkir.hotel.reservation.application;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
+
 import com.afkir.hotel.reservation.application.command.CreateReservationCommand;
 import com.afkir.hotel.reservation.domain.event.ReservationCreated;
 import com.afkir.hotel.reservation.domain.event.ReservationPaid;
@@ -14,11 +18,9 @@ import com.afkir.hotel.reservation.infrastructure.client.RateResponse;
 import com.afkir.hotel.shared.DateRange;
 import com.afkir.hotel.shared.DomainException;
 import com.afkir.hotel.shared.Money;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -30,19 +32,25 @@ public class ReservationApplicationService {
     private static final Logger log = LoggerFactory.getLogger(ReservationApplicationService.class);
 
     private final ReservationRepository reservationRepository;
+
     private final RoomTypeInventoryRepository inventoryRepository;
+
     private final RateClient rateClient;
+
     private final ApplicationEventPublisher events;
+
     private final double overbookingFactor;
+
     private final String currency;
+
     private final java.math.BigDecimal defaultNightlyRate;
 
     public ReservationApplicationService(ReservationRepository reservationRepository,
-            RoomTypeInventoryRepository inventoryRepository, RateClient rateClient,
-            ApplicationEventPublisher events,
-            @Value("${reservation.overbooking-factor:1.0}") double overbookingFactor,
-            @Value("${reservation.currency:EUR}") String currency,
-            @Value("${reservation.default-nightly-rate:100.00}") java.math.BigDecimal defaultNightlyRate) {
+                                         RoomTypeInventoryRepository inventoryRepository, RateClient rateClient,
+                                         ApplicationEventPublisher events,
+                                         @Value("${reservation.overbooking-factor:1.0}") double overbookingFactor,
+                                         @Value("${reservation.currency:EUR}") String currency,
+                                         @Value("${reservation.default-nightly-rate:100.00}") java.math.BigDecimal defaultNightlyRate) {
         this.reservationRepository = reservationRepository;
         this.inventoryRepository = inventoryRepository;
         this.rateClient = rateClient;
@@ -80,6 +88,20 @@ public class ReservationApplicationService {
         return saved;
     }
 
+    private Money nightlyAmount(CreateReservationCommand command, LocalDate date) {
+        try {
+            RateResponse rate = rateClient.getRate(command.hotelId(), command.roomTypeId(), date);
+            if (rate != null && rate.amount() != null) {
+                return Money.of(rate.amount(), currency);
+            }
+        }
+        catch (RuntimeException ex) {
+            log.warn("rate lookup failed for room type {} on {}, using default rate",
+                    command.roomTypeId(), date);
+        }
+        return Money.of(defaultNightlyRate, currency);
+    }
+
     @Transactional
     public Reservation confirmPayment(UUID reservationId) {
         Reservation reservation = getReservation(reservationId);
@@ -89,36 +111,18 @@ public class ReservationApplicationService {
         return saved;
     }
 
-    @Transactional
-    public Reservation cancel(UUID reservationId) {
-        Reservation reservation = getReservation(reservationId);
-        reservation.cancel();
-        releaseInventory(reservation);
-        return reservationRepository.save(reservation);
-    }
-
     @Transactional(readOnly = true)
     public Reservation getReservation(UUID reservationId) {
         return reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new DomainException("reservation not found: " + reservationId));
     }
 
-    @Transactional(readOnly = true)
-    public List<Reservation> findByGuest(UUID guestId) {
-        return reservationRepository.findByGuestId(guestId);
-    }
-
     @Transactional
-    public void setInventory(UUID hotelId, UUID roomTypeId, LocalDate start, LocalDate end,
-            int totalInventory) {
-        DateRange range = new DateRange(start, end);
-        for (LocalDate date : range.dates()) {
-            RoomTypeInventoryId id = new RoomTypeInventoryId(hotelId, roomTypeId, date);
-            RoomTypeInventory inventory = inventoryRepository.findById(id)
-                    .orElseGet(() -> new RoomTypeInventory(hotelId, roomTypeId, date, 0));
-            inventory.setTotalInventory(totalInventory);
-            inventoryRepository.save(inventory);
-        }
+    public Reservation cancel(UUID reservationId) {
+        Reservation reservation = getReservation(reservationId);
+        reservation.cancel();
+        releaseInventory(reservation);
+        return reservationRepository.save(reservation);
     }
 
     private void releaseInventory(Reservation reservation) {
@@ -133,16 +137,22 @@ public class ReservationApplicationService {
         }
     }
 
-    private Money nightlyAmount(CreateReservationCommand command, LocalDate date) {
-        try {
-            RateResponse rate = rateClient.getRate(command.hotelId(), command.roomTypeId(), date);
-            if (rate != null && rate.amount() != null) {
-                return Money.of(rate.amount(), currency);
-            }
-        } catch (RuntimeException ex) {
-            log.warn("rate lookup failed for room type {} on {}, using default rate",
-                    command.roomTypeId(), date);
-        }
-        return Money.of(defaultNightlyRate, currency);
+    @Transactional(readOnly = true)
+    public List<Reservation> findByGuest(UUID guestId) {
+        return reservationRepository.findByGuestId(guestId);
     }
+
+    @Transactional
+    public void setInventory(UUID hotelId, UUID roomTypeId, LocalDate start, LocalDate end,
+                             int totalInventory) {
+        DateRange range = new DateRange(start, end);
+        for (LocalDate date : range.dates()) {
+            RoomTypeInventoryId id = new RoomTypeInventoryId(hotelId, roomTypeId, date);
+            RoomTypeInventory inventory = inventoryRepository.findById(id)
+                    .orElseGet(() -> new RoomTypeInventory(hotelId, roomTypeId, date, 0));
+            inventory.setTotalInventory(totalInventory);
+            inventoryRepository.save(inventory);
+        }
+    }
+
 }

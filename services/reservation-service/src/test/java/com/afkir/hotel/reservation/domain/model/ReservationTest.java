@@ -1,25 +1,26 @@
 package com.afkir.hotel.reservation.domain.model;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import com.afkir.hotel.shared.DomainException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
+
+import com.afkir.hotel.shared.DomainException;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 class ReservationTest {
+
+    @Test
+    void newReservationIsPending() {
+        assertEquals(ReservationStatus.PENDING, reservation().getStatus());
+    }
 
     private Reservation reservation() {
         return new Reservation(UUID.randomUUID(), "key-1", UUID.randomUUID(), UUID.randomUUID(),
                 UUID.randomUUID(), LocalDate.of(2026, 7, 1), LocalDate.of(2026, 7, 3), 1,
                 new BigDecimal("200.00"), "EUR");
-    }
-
-    @Test
-    void newReservationIsPending() {
-        assertEquals(ReservationStatus.PENDING, reservation().getStatus());
     }
 
     @Test
@@ -40,4 +41,5 @@ class ReservationTest {
         reservation.markPaid();
         assertThrows(DomainException.class, reservation::markPaid);
     }
+
 }

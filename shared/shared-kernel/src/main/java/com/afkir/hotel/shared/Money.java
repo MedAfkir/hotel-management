@@ -16,12 +16,12 @@ public record Money(BigDecimal amount, Currency currency) {
         }
     }
 
-    public static Money of(BigDecimal amount, String currencyCode) {
-        return new Money(amount, Currency.getInstance(currencyCode));
-    }
-
     public static Money zero(String currencyCode) {
         return of(BigDecimal.ZERO, currencyCode);
+    }
+
+    public static Money of(BigDecimal amount, String currencyCode) {
+        return new Money(amount, Currency.getInstance(currencyCode));
     }
 
     public Money add(Money other) {
@@ -29,13 +29,14 @@ public record Money(BigDecimal amount, Currency currency) {
         return new Money(amount.add(other.amount), currency);
     }
 
-    public Money multiply(int factor) {
-        return new Money(amount.multiply(BigDecimal.valueOf(factor)), currency);
-    }
-
     private void requireSameCurrency(Money other) {
         if (!currency.equals(other.currency)) {
             throw new DomainException("currency mismatch");
         }
     }
+
+    public Money multiply(int factor) {
+        return new Money(amount.multiply(BigDecimal.valueOf(factor)), currency);
+    }
+
 }

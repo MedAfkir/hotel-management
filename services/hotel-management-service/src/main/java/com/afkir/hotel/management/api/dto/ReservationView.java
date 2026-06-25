@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import lombok.Builder;
+
+@Builder
 public record ReservationView(
         UUID id,
         UUID hotelId,

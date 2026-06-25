@@ -1,10 +1,11 @@
 package com.afkir.hotel.shared;
 
+import java.time.LocalDate;
+
+import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.time.LocalDate;
-import org.junit.jupiter.api.Test;
 
 class DateRangeTest {
 
@@ -21,4 +22,5 @@ class DateRangeTest {
         assertThrows(DomainException.class,
                 () -> new DateRange(LocalDate.of(2026, 7, 4), LocalDate.of(2026, 7, 4)));
     }
+
 }

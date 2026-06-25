@@ -1,12 +1,18 @@
 package com.afkir.hotel.hotel.domain.model;
 
+import java.util.UUID;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.util.UUID;
+
+import lombok.Builder;
+import lombok.Getter;
 
 @Entity
 @Table(name = "room")
+@Getter
+@Builder
 public class Room {
 
     @Id
@@ -37,31 +43,4 @@ public class Room {
         this.available = true;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public UUID getHotelId() {
-        return hotelId;
-    }
-
-    public UUID getRoomTypeId() {
-        return roomTypeId;
-    }
-
-    public int getFloor() {
-        return floor;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public boolean isAvailable() {
-        return available;
-    }
 }

@@ -1,20 +1,20 @@
 package com.afkir.hotel.housekeeping.infrastructure.persistence;
 
-import com.afkir.hotel.housekeeping.domain.model.HousekeepingTask;
-import com.afkir.hotel.housekeeping.domain.repository.HousekeepingTaskRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import com.afkir.hotel.housekeeping.domain.model.HousekeepingTask;
+import com.afkir.hotel.housekeeping.domain.repository.HousekeepingTaskRepository;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class HousekeepingTaskRepositoryAdapter implements HousekeepingTaskRepository {
 
     private final JpaHousekeepingTaskRepository jpa;
-
-    public HousekeepingTaskRepositoryAdapter(JpaHousekeepingTaskRepository jpa) {
-        this.jpa = jpa;
-    }
 
     @Override
     public HousekeepingTask save(HousekeepingTask task) {
@@ -30,4 +30,5 @@ public class HousekeepingTaskRepositoryAdapter implements HousekeepingTaskReposi
     public List<HousekeepingTask> findByHotelId(UUID hotelId) {
         return jpa.findByHotelId(hotelId);
     }
+
 }

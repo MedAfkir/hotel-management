@@ -1,13 +1,17 @@
 package com.afkir.hotel.reservation.domain.model;
 
-import com.afkir.hotel.shared.DomainException;
+import java.time.LocalDate;
+import java.util.UUID;
+
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-import java.time.LocalDate;
-import java.util.UUID;
 
+import com.afkir.hotel.shared.DomainException;
+import lombok.Getter;
+
+@Getter
 @Entity
 @Table(name = "room_type_inventory")
 public class RoomTypeInventory {
@@ -49,23 +53,8 @@ public class RoomTypeInventory {
         totalReserved = Math.max(0, totalReserved - rooms);
     }
 
-    public RoomTypeInventoryId getId() {
-        return id;
-    }
-
-    public int getTotalInventory() {
-        return totalInventory;
-    }
-
-    public int getTotalReserved() {
-        return totalReserved;
-    }
-
-    public long getVersion() {
-        return version;
-    }
-
     public void setTotalInventory(int totalInventory) {
         this.totalInventory = totalInventory;
     }
+
 }

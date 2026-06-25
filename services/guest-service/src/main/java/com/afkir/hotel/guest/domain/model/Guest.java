@@ -1,15 +1,16 @@
 package com.afkir.hotel.guest.domain.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import java.util.UUID;
+
+import jakarta.persistence.*;
+
+import lombok.Builder;
+import lombok.Getter;
 
 @Entity
 @Table(name = "guest")
+@Getter
+@Builder
 public class Guest {
 
     @Id
@@ -43,27 +44,4 @@ public class Guest {
         this.loyaltyTier = tier;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public LoyaltyTier getLoyaltyTier() {
-        return loyaltyTier;
-    }
 }

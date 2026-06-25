@@ -1,12 +1,16 @@
 package com.afkir.hotel.rate.domain.model;
 
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
+import lombok.Getter;
+
+@Getter
 @Entity
 @Table(name = "room_type_rate")
 public class RoomTypeRate {
@@ -21,8 +25,8 @@ public class RoomTypeRate {
     protected RoomTypeRate() {
     }
 
-    public RoomTypeRate(UUID hotelId, UUID roomTypeId, LocalDate date, BigDecimal amount,
-            String currency) {
+    public RoomTypeRate(UUID hotelId, UUID roomTypeId, LocalDate date,
+                        BigDecimal amount, String currency) {
         this.id = new RoomTypeRateId(hotelId, roomTypeId, date);
         this.amount = amount;
         this.currency = currency;
@@ -33,15 +37,4 @@ public class RoomTypeRate {
         this.currency = currency;
     }
 
-    public RoomTypeRateId getId() {
-        return id;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
 }

@@ -1,40 +1,38 @@
 package com.afkir.hotel.payment.application;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.UUID;
+
 import com.afkir.hotel.payment.domain.model.Payment;
 import com.afkir.hotel.payment.domain.repository.PaymentRepository;
 import com.afkir.hotel.payment.infrastructure.client.ReservationClient;
 import com.afkir.hotel.shared.DomainException;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.UUID;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class PaymentApplicationService {
 
-    private static final Logger log = LoggerFactory.getLogger(PaymentApplicationService.class);
-
     private final PaymentRepository repository;
-    private final ReservationClient reservationClient;
 
-    public PaymentApplicationService(PaymentRepository repository,
-            ReservationClient reservationClient) {
-        this.repository = repository;
-        this.reservationClient = reservationClient;
-    }
+    private final ReservationClient reservationClient;
 
     @Transactional
     public Payment processPayment(UUID reservationId, BigDecimal amount, String currency,
-            String method) {
+                                  String method) {
         Payment payment = new Payment(reservationId, amount, currency, method);
         payment.complete();
         Payment saved = repository.save(payment);
         try {
             reservationClient.confirm(reservationId);
-        } catch (RuntimeException ex) {
+        }
+        catch (RuntimeException ex) {
             log.warn("could not confirm reservation {} after payment", reservationId);
         }
         return saved;
@@ -57,4 +55,5 @@ public class PaymentApplicationService {
     public List<Payment> findByReservation(UUID reservationId) {
         return repository.findByReservationId(reservationId);
     }
+
 }

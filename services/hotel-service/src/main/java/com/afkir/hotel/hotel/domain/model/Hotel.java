@@ -1,12 +1,18 @@
 package com.afkir.hotel.hotel.domain.model;
 
+import java.util.UUID;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.util.UUID;
+
+import lombok.Builder;
+import lombok.Getter;
 
 @Entity
 @Table(name = "hotel")
+@Getter
+@Builder
 public class Hotel {
 
     @Id
@@ -28,19 +34,4 @@ public class Hotel {
         this.city = city;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public String getCity() {
-        return city;
-    }
 }

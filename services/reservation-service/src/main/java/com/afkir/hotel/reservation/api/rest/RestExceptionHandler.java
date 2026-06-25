@@ -1,8 +1,10 @@
 package com.afkir.hotel.reservation.api.rest;
 
+import java.util.Map;
+
 import com.afkir.hotel.reservation.domain.model.InsufficientInventoryException;
 import com.afkir.hotel.shared.DomainException;
-import java.util.Map;
+
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,4 +31,5 @@ public class RestExceptionHandler {
     public ResponseEntity<Map<String, String>> handleDomain(DomainException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", ex.getMessage()));
     }
+
 }

@@ -1,7 +1,9 @@
 package com.afkir.hotel.housekeeping.api.rest;
 
-import com.afkir.hotel.shared.DomainException;
 import java.util.Map;
+
+import com.afkir.hotel.shared.DomainException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,4 +16,5 @@ public class RestExceptionHandler {
     public ResponseEntity<Map<String, String>> handleDomain(DomainException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", ex.getMessage()));
     }
+
 }

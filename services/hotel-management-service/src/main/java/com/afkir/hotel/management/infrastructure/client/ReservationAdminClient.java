@@ -1,7 +1,9 @@
 package com.afkir.hotel.management.infrastructure.client;
 
-import com.afkir.hotel.management.api.dto.ReservationView;
 import java.util.UUID;
+
+import com.afkir.hotel.management.api.dto.ReservationView;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,4 +13,5 @@ public interface ReservationAdminClient {
 
     @GetMapping("/{id}")
     ReservationView get(@PathVariable("id") UUID id);
+
 }

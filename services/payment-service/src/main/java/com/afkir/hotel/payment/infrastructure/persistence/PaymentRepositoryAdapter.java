@@ -1,20 +1,20 @@
 package com.afkir.hotel.payment.infrastructure.persistence;
 
-import com.afkir.hotel.payment.domain.model.Payment;
-import com.afkir.hotel.payment.domain.repository.PaymentRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import com.afkir.hotel.payment.domain.model.Payment;
+import com.afkir.hotel.payment.domain.repository.PaymentRepository;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class PaymentRepositoryAdapter implements PaymentRepository {
 
     private final JpaPaymentRepository jpa;
-
-    public PaymentRepositoryAdapter(JpaPaymentRepository jpa) {
-        this.jpa = jpa;
-    }
 
     @Override
     public Payment save(Payment payment) {
@@ -30,4 +30,5 @@ public class PaymentRepositoryAdapter implements PaymentRepository {
     public List<Payment> findByReservationId(UUID reservationId) {
         return jpa.findByReservationId(reservationId);
     }
+
 }

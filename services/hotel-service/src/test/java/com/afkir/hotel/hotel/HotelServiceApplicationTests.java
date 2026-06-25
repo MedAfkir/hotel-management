@@ -1,6 +1,7 @@
 package com.afkir.hotel.hotel;
 
 import org.junit.jupiter.api.Test;
+
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
@@ -15,4 +16,5 @@ class HotelServiceApplicationTests {
     @Test
     void contextLoads() {
     }
+
 }

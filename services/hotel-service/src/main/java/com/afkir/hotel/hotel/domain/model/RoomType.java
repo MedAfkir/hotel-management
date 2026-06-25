@@ -1,12 +1,18 @@
 package com.afkir.hotel.hotel.domain.model;
 
+import java.util.UUID;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.util.UUID;
+
+import lombok.Builder;
+import lombok.Getter;
 
 @Entity
 @Table(name = "room_type")
+@Builder
+@Getter
 public class RoomType {
 
     @Id
@@ -28,19 +34,4 @@ public class RoomType {
         this.maxOccupancy = maxOccupancy;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public UUID getHotelId() {
-        return hotelId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getMaxOccupancy() {
-        return maxOccupancy;
-    }
 }

@@ -29,4 +29,5 @@ public record DateRange(LocalDate start, LocalDate end) {
         }
         return result;
     }
+
 }

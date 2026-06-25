@@ -1,10 +1,11 @@
 package com.afkir.hotel.shared;
 
+import java.math.BigDecimal;
+
+import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.math.BigDecimal;
-import org.junit.jupiter.api.Test;
 
 class MoneyTest {
 
@@ -32,4 +33,5 @@ class MoneyTest {
         Money b = Money.of(new BigDecimal("5.00"), "USD");
         assertThrows(DomainException.class, () -> a.add(b));
     }
+
 }

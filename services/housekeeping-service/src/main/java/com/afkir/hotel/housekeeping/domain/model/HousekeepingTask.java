@@ -1,16 +1,18 @@
 package com.afkir.hotel.housekeeping.domain.model;
 
-import com.afkir.hotel.shared.DomainException;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import jakarta.persistence.*;
+
+import com.afkir.hotel.shared.DomainException;
+import lombok.Builder;
+import lombok.Getter;
+
 @Entity
 @Table(name = "housekeeping_task")
+@Builder
+@Getter
 public class HousekeepingTask {
 
     @Id
@@ -51,15 +53,15 @@ public class HousekeepingTask {
         status = TaskStatus.IN_PROGRESS;
     }
 
-    public void complete() {
-        requireStatus(TaskStatus.IN_PROGRESS);
-        status = TaskStatus.DONE;
-    }
-
     private void requireStatus(TaskStatus expected) {
         if (status != expected) {
             throw new DomainException("expected status " + expected + " but was " + status);
         }
+    }
+
+    public void complete() {
+        requireStatus(TaskStatus.IN_PROGRESS);
+        status = TaskStatus.DONE;
     }
 
     public UUID getId() {
@@ -89,4 +91,5 @@ public class HousekeepingTask {
     public LocalDate getScheduledDate() {
         return scheduledDate;
     }
+
 }

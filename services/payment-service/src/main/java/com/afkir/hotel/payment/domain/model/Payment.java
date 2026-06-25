@@ -1,16 +1,18 @@
 package com.afkir.hotel.payment.domain.model;
 
-import com.afkir.hotel.shared.DomainException;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import jakarta.persistence.*;
+
+import com.afkir.hotel.shared.DomainException;
+import lombok.Builder;
+import lombok.Getter;
+
 @Entity
 @Table(name = "payment")
+@Getter
+@Builder
 public class Payment {
 
     @Id
@@ -44,6 +46,12 @@ public class Payment {
         status = PaymentStatus.COMPLETED;
     }
 
+    private void requireStatus(PaymentStatus expected) {
+        if (status != expected) {
+            throw new DomainException("expected status " + expected + " but was " + status);
+        }
+    }
+
     public void fail() {
         requireStatus(PaymentStatus.PENDING);
         status = PaymentStatus.FAILED;
@@ -54,33 +62,4 @@ public class Payment {
         status = PaymentStatus.REFUNDED;
     }
 
-    private void requireStatus(PaymentStatus expected) {
-        if (status != expected) {
-            throw new DomainException("expected status " + expected + " but was " + status);
-        }
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public UUID getReservationId() {
-        return reservationId;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public String getMethod() {
-        return method;
-    }
-
-    public PaymentStatus getStatus() {
-        return status;
-    }
 }

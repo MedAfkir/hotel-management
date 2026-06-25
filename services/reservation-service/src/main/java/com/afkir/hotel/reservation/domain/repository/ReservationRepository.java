@@ -1,9 +1,10 @@
 package com.afkir.hotel.reservation.domain.repository;
 
-import com.afkir.hotel.reservation.domain.model.Reservation;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import com.afkir.hotel.reservation.domain.model.Reservation;
 
 public interface ReservationRepository {
 
@@ -14,4 +15,5 @@ public interface ReservationRepository {
     Optional<Reservation> findByIdempotencyKey(String idempotencyKey);
 
     List<Reservation> findByGuestId(UUID guestId);
+
 }

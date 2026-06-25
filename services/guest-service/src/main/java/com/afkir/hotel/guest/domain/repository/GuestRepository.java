@@ -1,9 +1,11 @@
 package com.afkir.hotel.guest.domain.repository;
 
-import com.afkir.hotel.guest.domain.model.Guest;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import com.afkir.hotel.guest.domain.model.Guest;
+
 
 public interface GuestRepository {
 

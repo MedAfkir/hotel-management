@@ -1,9 +1,10 @@
 package com.afkir.hotel.notification.domain.repository;
 
-import com.afkir.hotel.notification.domain.model.Notification;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import com.afkir.hotel.notification.domain.model.Notification;
 
 public interface NotificationRepository {
 
@@ -12,4 +13,5 @@ public interface NotificationRepository {
     Optional<Notification> findById(UUID id);
 
     List<Notification> findAll();
+
 }

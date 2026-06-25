@@ -1,16 +1,22 @@
 package com.afkir.hotel.rate.domain.model;
 
-import jakarta.persistence.Embeddable;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
+import jakarta.persistence.Embeddable;
+
+import lombok.Getter;
+
+@Getter
 @Embeddable
 public class RoomTypeRateId implements Serializable {
 
     private UUID hotelId;
+
     private UUID roomTypeId;
+
     private LocalDate date;
 
     protected RoomTypeRateId() {
@@ -20,18 +26,6 @@ public class RoomTypeRateId implements Serializable {
         this.hotelId = hotelId;
         this.roomTypeId = roomTypeId;
         this.date = date;
-    }
-
-    public UUID getHotelId() {
-        return hotelId;
-    }
-
-    public UUID getRoomTypeId() {
-        return roomTypeId;
-    }
-
-    public LocalDate getDate() {
-        return date;
     }
 
     @Override
@@ -51,4 +45,5 @@ public class RoomTypeRateId implements Serializable {
     public int hashCode() {
         return Objects.hash(hotelId, roomTypeId, date);
     }
+
 }

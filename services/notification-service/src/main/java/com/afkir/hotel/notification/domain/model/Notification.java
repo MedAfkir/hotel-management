@@ -1,16 +1,17 @@
 package com.afkir.hotel.notification.domain.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import java.time.Instant;
 import java.util.UUID;
 
+import jakarta.persistence.*;
+
+import lombok.Builder;
+import lombok.Getter;
+
 @Entity
 @Table(name = "notification")
+@Getter
+@Builder
 public class Notification {
 
     @Id
@@ -52,31 +53,4 @@ public class Notification {
         this.status = NotificationStatus.FAILED;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public String getRecipient() {
-        return recipient;
-    }
-
-    public NotificationChannel getChannel() {
-        return channel;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public NotificationStatus getStatus() {
-        return status;
-    }
-
-    public Instant getSentAt() {
-        return sentAt;
-    }
 }

@@ -1,10 +1,13 @@
 package com.afkir.hotel.reservation.api.dto;
 
-import com.afkir.hotel.reservation.domain.model.Reservation;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import com.afkir.hotel.reservation.domain.model.Reservation;
+import lombok.Builder;
+
+@Builder
 public record ReservationResponse(
         UUID id,
         UUID hotelId,
@@ -23,4 +26,5 @@ public record ReservationResponse(
                 reservation.getEndDate(), reservation.getNumberOfRooms(), reservation.getTotalAmount(),
                 reservation.getCurrency(), reservation.getStatus().name());
     }
+
 }
