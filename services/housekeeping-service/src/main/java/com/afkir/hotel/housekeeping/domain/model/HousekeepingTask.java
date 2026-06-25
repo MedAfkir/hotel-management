@@ -64,32 +64,4 @@ public class HousekeepingTask {
         status = TaskStatus.DONE;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public UUID getHotelId() {
-        return hotelId;
-    }
-
-    public UUID getRoomId() {
-        return roomId;
-    }
-
-    public TaskType getType() {
-        return type;
-    }
-
-    public TaskStatus getStatus() {
-        return status;
-    }
-
-    public String getAssignee() {
-        return assignee;
-    }
-
-    public LocalDate getScheduledDate() {
-        return scheduledDate;
-    }
-
 }
