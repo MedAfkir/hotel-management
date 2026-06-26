@@ -18,8 +18,6 @@ import com.afkir.hotel.reservation.infrastructure.client.RateResponse;
 import com.afkir.hotel.shared.DateRange;
 import com.afkir.hotel.shared.DomainException;
 import com.afkir.hotel.shared.Money;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -28,8 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ReservationApplicationService {
-
-    private static final Logger log = LoggerFactory.getLogger(ReservationApplicationService.class);
 
     private final ReservationRepository reservationRepository;
 
@@ -89,15 +85,9 @@ public class ReservationApplicationService {
     }
 
     private Money nightlyAmount(CreateReservationCommand command, LocalDate date) {
-        try {
-            RateResponse rate = rateClient.getRate(command.hotelId(), command.roomTypeId(), date);
-            if (rate != null && rate.amount() != null) {
-                return Money.of(rate.amount(), currency);
-            }
-        }
-        catch (RuntimeException ex) {
-            log.warn("rate lookup failed for room type {} on {}, using default rate",
-                    command.roomTypeId(), date);
+        RateResponse rate = rateClient.getRate(command.hotelId(), command.roomTypeId(), date);
+        if (rate != null && rate.amount() != null) {
+            return Money.of(rate.amount(), currency);
         }
         return Money.of(defaultNightlyRate, currency);
     }

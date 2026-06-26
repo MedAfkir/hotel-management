@@ -6,13 +6,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-import lombok.Builder;
 import lombok.Getter;
 
 @Entity
 @Table(name = "hotel")
 @Getter
-@Builder
 public class Hotel {
 
     @Id

@@ -6,12 +6,10 @@ import java.util.UUID;
 import jakarta.persistence.*;
 
 import com.afkir.hotel.shared.DomainException;
-import lombok.Builder;
 import lombok.Getter;
 
 @Entity
 @Table(name = "housekeeping_task")
-@Builder
 @Getter
 public class HousekeepingTask {
 

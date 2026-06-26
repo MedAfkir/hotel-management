@@ -6,7 +6,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@FeignClient(name = "reservation-service", path = "/api/reservations")
+@FeignClient(name = "reservation-service", path = "/api/reservations",
+        fallbackFactory = ReservationClientFallbackFactory.class)
 public interface ReservationClient {
 
     @PostMapping("/{id}/confirm")

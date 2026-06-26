@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "hotel-service", path = "/api/hotels")
+@FeignClient(name = "hotel-service", path = "/api/hotels",
+        fallbackFactory = HotelAdminClientFallbackFactory.class)
 public interface HotelAdminClient {
 
     @PostMapping

@@ -7,12 +7,10 @@ import java.util.UUID;
 import jakarta.persistence.*;
 
 import com.afkir.hotel.shared.DomainException;
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Entity
-@Builder
 @Table(name = "reservation")
 public class Reservation {
 

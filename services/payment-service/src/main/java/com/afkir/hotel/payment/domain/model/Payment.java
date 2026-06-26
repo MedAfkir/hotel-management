@@ -6,13 +6,11 @@ import java.util.UUID;
 import jakarta.persistence.*;
 
 import com.afkir.hotel.shared.DomainException;
-import lombok.Builder;
 import lombok.Getter;
 
 @Entity
 @Table(name = "payment")
 @Getter
-@Builder
 public class Payment {
 
     @Id
