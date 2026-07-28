@@ -19,6 +19,7 @@ The reservation domain follows the hotel reservation system from System Design I
 | platform/discovery-server | 8761 | Eureka service registry                    |
 | platform/config-server    | 8888 | Centralized configuration (native profile) |
 | platform/api-gateway      | 8080 | Edge gateway and routing                   |
+| keycloak (compose)        | 8180 | OpenID Connect identity provider           |
 
 ## Domain services
 
@@ -36,6 +37,32 @@ The reservation domain follows the hotel reservation system from System Design I
 ## Shared
 
 - shared/shared-kernel: shared domain primitives (Money, DateRange, DomainException)
+- shared/security-starter: OAuth2 resource-server auto-configuration and Keycloak role mapping
+
+## Security
+
+Authentication and authorization use OAuth2/OIDC with Keycloak as the identity provider.
+
+- The gateway validates the bearer token at the edge and forwards it downstream.
+- Every domain service is an independent resource server that re-validates the token (zero-trust).
+- Keycloak realm roles are mapped to Spring authorities with a `ROLE_` prefix; enforce them with
+  `@PreAuthorize("hasRole('ADMIN')")` on controllers or service methods.
+- `/api/admin/**` requires `ROLE_ADMIN` at the gateway; all other routes require an authenticated user.
+
+`docker compose up -d` starts Keycloak on port 8180 and imports the `hotel` realm from
+`docker/keycloak/realm-hotel.json` (client `hotel-app`, roles ADMIN/STAFF/GUEST, users
+admin/admin, staff/staff, guest/guest). The admin console is at http://localhost:8180 (admin/admin).
+
+Keycloak must be running before the gateway and services start, since the JWT issuer metadata
+is fetched at startup.
+
+Get a token and call a protected route:
+
+    TOKEN=$(curl -s http://localhost:8180/realms/hotel/protocol/openid-connect/token \
+      -d grant_type=password -d client_id=hotel-app -d client_secret=hotel-app-secret \
+      -d username=admin -d password=admin | jq -r .access_token)
+
+    curl http://localhost:8080/api/hotels -H "Authorization: Bearer $TOKEN"
 
 ## Build
 
