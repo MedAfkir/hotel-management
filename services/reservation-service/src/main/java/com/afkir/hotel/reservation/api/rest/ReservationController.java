@@ -6,10 +6,12 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 
 import com.afkir.hotel.reservation.api.dto.CreateReservationRequest;
+import com.afkir.hotel.reservation.api.dto.PayReservationRequest;
 import com.afkir.hotel.reservation.api.dto.ReservationResponse;
 import com.afkir.hotel.reservation.api.dto.SetInventoryRequest;
 import com.afkir.hotel.reservation.application.ReservationApplicationService;
 import com.afkir.hotel.reservation.application.command.CreateReservationCommand;
+import com.afkir.hotel.reservation.application.saga.PaymentSagaOrchestrator;
 import com.afkir.hotel.reservation.domain.model.Reservation;
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +26,8 @@ public class ReservationController {
 
     private final ReservationApplicationService service;
 
+    private final PaymentSagaOrchestrator orchestrator;
+
     @PostMapping
     public ResponseEntity<ReservationResponse> create(
             @Valid @RequestBody CreateReservationRequest request) {
@@ -33,9 +37,11 @@ public class ReservationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ReservationResponse.from(reservation));
     }
 
-    @PostMapping("/{id}/confirm")
-    public ReservationResponse confirm(@PathVariable UUID id) {
-        return ReservationResponse.from(service.confirmPayment(id));
+    @PostMapping("/{id}/pay")
+    public ResponseEntity<ReservationResponse> pay(@PathVariable UUID id,
+                                                   @Valid @RequestBody PayReservationRequest request) {
+        orchestrator.startPayment(id, request.method());
+        return ResponseEntity.accepted().body(ReservationResponse.from(service.getReservation(id)));
     }
 
     @PostMapping("/{id}/cancel")

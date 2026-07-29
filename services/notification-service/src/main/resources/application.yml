@@ -14,6 +14,27 @@ spring:
     hibernate:
       ddl-auto: update
     open-in-view: false
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:hotel}
+    password: ${RABBITMQ_PASSWORD:hotel}
+  cloud:
+    function:
+      definition: reservationEvents
+    stream:
+      bindings:
+        reservationEvents-in-0:
+          destination: reservation-events
+          group: notification-service
+          consumer:
+            max-attempts: 3
+      rabbit:
+        bindings:
+          reservationEvents-in-0:
+            consumer:
+              auto-bind-dlq: true
+              republish-to-dlq: true
 
 eureka:
   client:

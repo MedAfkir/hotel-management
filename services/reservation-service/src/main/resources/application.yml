@@ -14,15 +14,36 @@ spring:
     hibernate:
       ddl-auto: update
     open-in-view: false
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:hotel}
+    password: ${RABBITMQ_PASSWORD:hotel}
   cloud:
-    openfeign:
-      circuitbreaker:
-        enabled: true
-      client:
-        config:
-          default:
-            connect-timeout: 1000
-            read-timeout: 3000
+    function:
+      definition: paymentReplies;rateEvents
+    stream:
+      bindings:
+        paymentReplies-in-0:
+          destination: payment-replies
+          group: reservation-service
+          consumer:
+            max-attempts: 3
+        rateEvents-in-0:
+          destination: rate-events
+          group: reservation-service
+          consumer:
+            max-attempts: 3
+      rabbit:
+        bindings:
+          paymentReplies-in-0:
+            consumer:
+              auto-bind-dlq: true
+              republish-to-dlq: true
+          rateEvents-in-0:
+            consumer:
+              auto-bind-dlq: true
+              republish-to-dlq: true
 
 reservation:
   overbooking-factor: 1.10

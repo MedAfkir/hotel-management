@@ -12,5 +12,23 @@ services:
       - ./docker/postgres/init-databases.sql:/docker-entrypoint-initdb.d/init-databases.sql:ro
       - hotel-postgres-data:/var/lib/postgresql/data
 
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: hotel-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-hotel}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-hotel}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - hotel-rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 volumes:
   hotel-postgres-data:
+  hotel-rabbitmq-data:

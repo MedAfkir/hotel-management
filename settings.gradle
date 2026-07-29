@@ -1,6 +1,8 @@
 rootProject.name = 'hotel-management'
 
 include 'shared:shared-kernel'
+include 'shared:shared-messaging'
+include 'shared:shared-outbox'
 
 include 'platform:discovery-server'
 include 'platform:config-server'

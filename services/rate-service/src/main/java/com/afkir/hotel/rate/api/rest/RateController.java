@@ -47,4 +47,9 @@ public class RateController {
         return ResponseEntity.status(HttpStatus.CREATED).body(RateResponse.from(rate));
     }
 
+    @PostMapping("/replay")
+    public ResponseEntity<Integer> replay() {
+        return ResponseEntity.accepted().body(service.replayAll());
+    }
+
 }

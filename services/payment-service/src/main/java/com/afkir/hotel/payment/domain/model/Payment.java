@@ -16,6 +16,7 @@ public class Payment {
     @Id
     private UUID id;
 
+    @Column(nullable = false, unique = true)
     private UUID reservationId;
 
     private BigDecimal amount;

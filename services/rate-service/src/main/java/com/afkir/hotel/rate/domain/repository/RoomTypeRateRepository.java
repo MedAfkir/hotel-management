@@ -16,4 +16,6 @@ public interface RoomTypeRateRepository {
 
     List<RoomTypeRate> findRange(UUID hotelId, UUID roomTypeId, LocalDate start, LocalDate end);
 
+    List<RoomTypeRate> findAll();
+
 }

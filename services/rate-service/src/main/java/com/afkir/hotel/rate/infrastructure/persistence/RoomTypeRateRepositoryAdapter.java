@@ -34,4 +34,9 @@ public class RoomTypeRateRepositoryAdapter implements RoomTypeRateRepository {
         return jpa.findByIdHotelIdAndIdRoomTypeIdAndIdDateBetween(hotelId, roomTypeId, start, end);
     }
 
+    @Override
+    public List<RoomTypeRate> findAll() {
+        return jpa.findAll();
+    }
+
 }
