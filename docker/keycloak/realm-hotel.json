@@ -1,0 +1,70 @@
+{
+  "realm": "hotel",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "accessTokenLifespan": 1800,
+  "roles": {
+    "realm": [
+      { "name": "ADMIN", "description": "Full administrative access" },
+      { "name": "STAFF", "description": "Hotel staff operations" },
+      { "name": "GUEST", "description": "Guest self-service access" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "hotel-app",
+      "name": "Hotel Application",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "secret": "hotel-app-secret",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "redirectUris": ["*"],
+      "webOrigins": ["*"],
+      "fullScopeAllowed": true
+    }
+  ],
+  "users": [
+    {
+      "username": "admin",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "admin@hotel.local",
+      "firstName": "Admin",
+      "lastName": "User",
+      "credentials": [
+        { "type": "password", "value": "admin", "temporary": false }
+      ],
+      "realmRoles": ["ADMIN", "STAFF"]
+    },
+    {
+      "username": "staff",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "staff@hotel.local",
+      "firstName": "Staff",
+      "lastName": "User",
+      "credentials": [
+        { "type": "password", "value": "staff", "temporary": false }
+      ],
+      "realmRoles": ["STAFF"]
+    },
+    {
+      "username": "guest",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "guest@hotel.local",
+      "firstName": "Guest",
+      "lastName": "User",
+      "credentials": [
+        { "type": "password", "value": "guest", "temporary": false }
+      ],
+      "realmRoles": ["GUEST"]
+    }
+  ]
+}

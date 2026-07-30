@@ -3,6 +3,7 @@ rootProject.name = 'hotel-management'
 include 'shared:shared-kernel'
 include 'shared:shared-messaging'
 include 'shared:shared-outbox'
+include 'shared:security-starter'
 
 include 'platform:discovery-server'
 include 'platform:config-server'
