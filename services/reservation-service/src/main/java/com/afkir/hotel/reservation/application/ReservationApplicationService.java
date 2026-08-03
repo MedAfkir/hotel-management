@@ -2,25 +2,22 @@ package com.afkir.hotel.reservation.application;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.afkir.hotel.reservation.application.command.CreateReservationCommand;
-import com.afkir.hotel.reservation.domain.event.ReservationCreated;
-import com.afkir.hotel.reservation.domain.event.ReservationPaid;
 import com.afkir.hotel.reservation.domain.model.InsufficientInventoryException;
 import com.afkir.hotel.reservation.domain.model.Reservation;
+import com.afkir.hotel.reservation.domain.model.ReservationStatus;
 import com.afkir.hotel.reservation.domain.model.RoomTypeInventory;
 import com.afkir.hotel.reservation.domain.model.RoomTypeInventoryId;
 import com.afkir.hotel.reservation.domain.repository.ReservationRepository;
 import com.afkir.hotel.reservation.domain.repository.RoomTypeInventoryRepository;
-import com.afkir.hotel.reservation.infrastructure.client.RateClient;
-import com.afkir.hotel.reservation.infrastructure.client.RateResponse;
 import com.afkir.hotel.shared.DateRange;
 import com.afkir.hotel.shared.DomainException;
 import com.afkir.hotel.shared.Money;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,9 +28,7 @@ public class ReservationApplicationService {
 
     private final RoomTypeInventoryRepository inventoryRepository;
 
-    private final RateClient rateClient;
-
-    private final ApplicationEventPublisher events;
+    private final RateReadModel rateReadModel;
 
     private final double overbookingFactor;
 
@@ -42,15 +37,14 @@ public class ReservationApplicationService {
     private final java.math.BigDecimal defaultNightlyRate;
 
     public ReservationApplicationService(ReservationRepository reservationRepository,
-                                         RoomTypeInventoryRepository inventoryRepository, RateClient rateClient,
-                                         ApplicationEventPublisher events,
+                                         RoomTypeInventoryRepository inventoryRepository,
+                                         RateReadModel rateReadModel,
                                          @Value("${reservation.overbooking-factor:1.0}") double overbookingFactor,
                                          @Value("${reservation.currency:EUR}") String currency,
                                          @Value("${reservation.default-nightly-rate:100.00}") java.math.BigDecimal defaultNightlyRate) {
         this.reservationRepository = reservationRepository;
         this.inventoryRepository = inventoryRepository;
-        this.rateClient = rateClient;
-        this.events = events;
+        this.rateReadModel = rateReadModel;
         this.overbookingFactor = overbookingFactor;
         this.currency = currency;
         this.defaultNightlyRate = defaultNightlyRate;
@@ -78,27 +72,34 @@ public class ReservationApplicationService {
                 command.hotelId(), command.roomTypeId(), command.guestId(), command.startDate(),
                 command.endDate(), command.numberOfRooms(), total.amount(),
                 total.currency().getCurrencyCode());
-        Reservation saved = reservationRepository.save(reservation);
-        events.publishEvent(new ReservationCreated(saved.getId(), saved.getGuestId(),
-                saved.getStartDate(), saved.getEndDate()));
-        return saved;
+        return reservationRepository.save(reservation);
     }
 
     private Money nightlyAmount(CreateReservationCommand command, LocalDate date) {
-        RateResponse rate = rateClient.getRate(command.hotelId(), command.roomTypeId(), date);
-        if (rate != null && rate.amount() != null) {
-            return Money.of(rate.amount(), currency);
-        }
-        return Money.of(defaultNightlyRate, currency);
+        return rateReadModel.find(command.hotelId(), command.roomTypeId(), date)
+                .map(snapshot -> Money.of(snapshot.getAmount(), currency))
+                .orElseGet(() -> Money.of(defaultNightlyRate, currency));
     }
 
     @Transactional
-    public Reservation confirmPayment(UUID reservationId) {
+    public Optional<Reservation> markPaidIfPending(UUID reservationId) {
         Reservation reservation = getReservation(reservationId);
+        if (reservation.getStatus() != ReservationStatus.PENDING) {
+            return Optional.empty();
+        }
         reservation.markPaid();
-        Reservation saved = reservationRepository.save(reservation);
-        events.publishEvent(new ReservationPaid(saved.getId()));
-        return saved;
+        return Optional.of(reservationRepository.save(reservation));
+    }
+
+    @Transactional
+    public Optional<Reservation> rejectAndReleaseIfPending(UUID reservationId) {
+        Reservation reservation = getReservation(reservationId);
+        if (reservation.getStatus() != ReservationStatus.PENDING) {
+            return Optional.empty();
+        }
+        reservation.reject();
+        releaseInventory(reservation);
+        return Optional.of(reservationRepository.save(reservation));
     }
 
     @Transactional(readOnly = true)

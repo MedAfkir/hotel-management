@@ -14,15 +14,27 @@ spring:
     hibernate:
       ddl-auto: update
     open-in-view: false
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:hotel}
+    password: ${RABBITMQ_PASSWORD:hotel}
   cloud:
-    openfeign:
-      circuitbreaker:
-        enabled: true
-      client:
-        config:
-          default:
-            connect-timeout: 1000
-            read-timeout: 3000
+    function:
+      definition: paymentCommands
+    stream:
+      bindings:
+        paymentCommands-in-0:
+          destination: payment-commands
+          group: payment-service
+          consumer:
+            max-attempts: 3
+      rabbit:
+        bindings:
+          paymentCommands-in-0:
+            consumer:
+              auto-bind-dlq: true
+              republish-to-dlq: true
 
 eureka:
   client:
